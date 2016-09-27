@@ -1,0 +1,62 @@
+﻿@model IEnumerable<TrbhiStore.Models.ProductModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Shop</h2>
+<div class="col-xs-12">
+    <div class="pull-right col-xs-12">
+       <div class="col-xs-2 pull-right"> Items : <div class="pull-right" id="item">@ViewBag.items</div></div>
+       <div class="col-xs-2 pull-right"> Total : <div class="pull-right" id="total">$ @ViewBag.total</div></div>
+    </div>
+</div>
+<br>
+<hr />
+<div class="col-xs-12 pull-right">
+    <div class="col-xs-4 pull-right text-center">
+        @using (Html.BeginForm("Index", "Cart"))
+        {
+            <button type="submit" value="Make Purchase" class="btn btn-primary">Make Purchase</button>
+        }
+    </div>
+</div>
+<br>
+<hr />
+@foreach (var p in Model)
+{
+    <div class="col-md-12">
+        <div class="col-md-3 text-center">
+            @Html.Label(p.ProductName) <br />
+            <label id="price">$ @p.Price</label>
+            @using (Html.BeginForm("AddCart", "Shop"))
+            {
+                @Html.Hidden("Id", p.Id);
+                @*<input type="submit" value="Add to Cart"  class="btn btn-default" />*@
+                <input type="button" _id="@p.Id" onclick="movetoCart(@p.Id);" value="Add to Cart" class="btn btn-default" />
+            }
+        </div>
+    </div>
+}
+
+<script>
+    function movetoCart(prodID) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("AddCart", "Shop")',
+            datatype: 'json',
+            data: { Id: prodID },
+            success: function (result) {
+                $("#item").html(result.count);
+                $("#total").html("$ " + result.total);
+            },
+            error: function () {
+                alert("Unable to save to Cart");
+            }
+        }
+
+            );
+    }
+
+</script>
