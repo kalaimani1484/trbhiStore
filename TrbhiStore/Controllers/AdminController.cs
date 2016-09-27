@@ -8,7 +8,7 @@ using TrbhiStore.Models;
 
 namespace TrbhiStore.Controllers
 {
-    //[Authorize(Roles ="Admin")]
+    [Authorize(Roles ="Admin")]
     public class AdminController : Controller
     {
         private StoreEntities db = new StoreEntities();
